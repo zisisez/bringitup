@@ -971,18 +971,43 @@ function () {
     this.slides = this.page.children;
     this.btns = document.querySelectorAll(btns);
     this.slideIndex = 1;
-  }
+  } //! Фукнция показа слайдов
+
 
   _createClass(Slider, [{
     key: "showSlides",
     value: function showSlides(n) {
+      var _this = this;
+
+      //! Если число больше чем кол-во слайдов, то возвращаем индекс в начальное положение
       if (n > this.slides.length) {
         this.slideIndex = 1;
-      }
+      } //! Если уходим в минус, то возвращаем последний слайд
+
 
       if (n < 1) {
         this.slideIndex = this.slides.length;
-      } //! Скрываем все ненужные слайды 
+      } //! Если элемент присутсвует и код может выполниться то
+
+
+      try {
+        //! Скрываем изначально блок
+        this.block.style.display = 'none'; //! Проверяем на какой странице находимся 
+
+        if (n === 2) {
+          this.block.classList.add('animated'); //! Если условие пройдено, запускаем функцию показа скрытого блока через время
+
+          setTimeout(function () {
+            _this.block.style.display = 'block';
+
+            _this.block.classList.add('fadeIn');
+
+            _this.block.style.zIndex = 10;
+          }, 3000);
+        } else {
+          this.block.classList.remove('fadeIn');
+        }
+      } catch (e) {} //! Скрываем все ненужные слайды 
 
 
       this.slides.forEach(function (slide) {
@@ -990,30 +1015,46 @@ function () {
       }); //! Вычитаем 1 так как нумерация в массиве начинается с 0, а наш слайд индекс с 1 и показываем нужный слайд
 
       this.slides[this.slideIndex - 1].style.display = 'block';
-    }
+    } //! Передаем в функцию показа слайдов функцию переключения 
+
   }, {
     key: "plusSlides",
     value: function plusSlides(n) {
       this.showSlides(this.slideIndex += n);
     }
   }, {
+    key: "showBlock",
+    value: function showBlock() {
+      this.block.style.display = 'none';
+      if (this.slideIndex == '2') setTimeout(function () {
+        block.style.display = 'block';
+      }, 3000);
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this = this;
+      var _this2 = this;
+
+      try {
+        this.block = document.querySelector('.hanson');
+      } catch (e) {}
 
       this.btns.forEach(function (item) {
         item.addEventListener('click', function () {
-          _this.plusSlides(1);
+          //! Передаем в функцию цифру которая будет прибавлятся к индексу слайда (кол-во переключенных слайдов)
+          _this2.plusSlides(1);
         }); //! Находим верхний элемент от родителя кнопки (для переключения на первый слайд по клику на иконку)
 
         item.parentNode.previousElementSibling.addEventListener('click', function (e) {
           e.preventDefault();
-          _this.slideIndex = 1;
+          _this2.slideIndex = 1;
 
-          _this.showSlides(_this.slideIndex);
+          _this2.showSlides(_this2.slideIndex);
         }); //! Выполняем первичную инициализацию слайдера
 
-        _this.showSlides(_this.slideIndex);
+        _this2.showSlides(_this2.slideIndex);
+
+        _this2.showBlock();
       });
     }
   }]);
